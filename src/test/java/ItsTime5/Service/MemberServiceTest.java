@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -45,21 +44,45 @@ public class MemberServiceTest {
         Member member2 = getMember2();
         memberService.save(member2);
 
-        Review review = new Review();
-        review.setStar(1);
-        review.setSender(member2);
-        review.setRecipient(member1);
+        Review review = new Review(member2,member1,1);
 
         memberService.saveReview(review);
 
         Assertions.assertThat(78).isEqualTo(member1.getBattery());
     }
 
+    @Test
+    @Transactional
+    public void memberReviewTest(){
+        Member member1 = getMember1();
+        Member member2 = getMember2();
+        Member member3 = getMember3();
+
+        memberService.save(member1);
+        memberService.save(member2);
+        memberService.save(member3);
+
+        Review review1 = new Review(member1,member3,5);
+        Review review2 = new Review(member2,member3,5);
+        Review review3 = new Review(member3,member1,4);
+
+        memberService.saveReview(review1);
+        memberService.saveReview(review2);
+        memberService.saveReview(review3);
+
+        Assertions.assertThat(2).isEqualTo(memberService.findAllReview(member3.getId()).size());
+
+    }
+
+
+    //========================================================================================//
+
+
     private Member getMember1() {
         Member member = new Member();
         MemberInfo memberInfo = new MemberInfo("김규리","rlarbfl@gmail.com","1234");
         member.setInfo(memberInfo);
-        member.setNickname("0606 개발중");
+        member.setNickname("귤");
         return member;
     }
 
@@ -67,7 +90,15 @@ public class MemberServiceTest {
         Member member = new Member();
         MemberInfo memberInfo = new MemberInfo("박정운","qkrwjddns@gmail.com","5678");
         member.setInfo(memberInfo);
-        member.setNickname("0606 개발중");
+        member.setNickname("운");
+        return member;
+    }
+
+    private Member getMember3() {
+        Member member = new Member();
+        MemberInfo memberInfo = new MemberInfo("김민준","rlaalswns@gmail.com","2345");
+        member.setInfo(memberInfo);
+        member.setNickname("준");
         return member;
     }
 }

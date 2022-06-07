@@ -33,7 +33,8 @@ public class MemberRepository {
     }
 
     public List<Review> findAllReview(Long memberId){
-        return em.createQuery("select r from Review r where where r.recipient = :memberId", Review.class)
+        String jpql = "select r from Review r join r.recipient re where re.id = :memberId ";
+        return em.createQuery(jpql, Review.class)
                 .setParameter("memberId",memberId)
                 .getResultList();
     }

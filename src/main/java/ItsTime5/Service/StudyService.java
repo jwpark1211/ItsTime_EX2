@@ -1,5 +1,6 @@
 package ItsTime5.Service;
 
+import ItsTime5.Domain.Study.Question;
 import ItsTime5.Domain.Study.RecruitStatus;
 import ItsTime5.Domain.Study.Study;
 import ItsTime5.Domain.Study.StudyInfo;
@@ -18,9 +19,13 @@ public class StudyService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void save(Study study){
+    public void save(Study study, Question...questions){
         try {
             studyRepository.save(study);
+
+            for (Question question : questions) {
+                studyRepository.saveQuestion(question);
+            }
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("**study save error**");
@@ -45,6 +50,10 @@ public class StudyService {
 
     public List<Study> findAll(){
         return studyRepository.findAll();
+    }
+
+    public List<Question> findAllQuestion(Long studyId){
+        return studyRepository.findAllQuestion(studyId);
     }
 
 }

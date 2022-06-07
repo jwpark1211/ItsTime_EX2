@@ -35,4 +35,8 @@ public class StudyInfo {
         this.content = content;
     }
 
+    public void modifyPersonLimit(int amount){
+        personLimit += amount;
+    }
+
 }

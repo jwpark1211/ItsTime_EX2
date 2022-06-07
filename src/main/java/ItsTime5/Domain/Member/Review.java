@@ -1,5 +1,6 @@
 package ItsTime5.Domain.Member;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,12 @@ public class Review {
     @JoinColumn(name = "recipient_id")
     private Member recipient; //받은 이
 
+    @NotNull
     private int Star;
 
+    public Review(Member sender, Member recipient, int star) {
+        this.sender = sender;
+        this.recipient = recipient;
+        Star = star;
+    }
 }

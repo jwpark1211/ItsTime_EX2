@@ -54,4 +54,6 @@ public class MemberService {
     public List<Member> findAll(){
         return memberRepository.findAll();
     }
+
+    public List<Review> findAllReview(Long memberId){return memberRepository.findAllReview(memberId);}
 }

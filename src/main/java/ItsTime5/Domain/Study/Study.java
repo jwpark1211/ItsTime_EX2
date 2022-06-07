@@ -21,4 +21,8 @@ public class Study {
     private RecruitStatus status = RecruitStatus.recruit;
     private LocalDateTime postTime = LocalDateTime.now();
 
+    public void modifyPersonLimit(int amount){
+        studyInfo.modifyPersonLimit(amount);
+    }
+
 }
