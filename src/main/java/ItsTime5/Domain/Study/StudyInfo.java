@@ -17,8 +17,6 @@ public class StudyInfo {
     private String isOnline; //대면비대면여부
     private String categories; //공부카테고리
     private int personLimit; //인원제한
-
-    @Lob
     private String content; //소개줄글
 
     protected StudyInfo() {

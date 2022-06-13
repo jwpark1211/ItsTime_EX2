@@ -22,7 +22,7 @@ public class MemberServiceTest {
     @Transactional
     public void MemberSaveTest(){
         Member member = getMember1();
-        memberService.save(member);
+        memberService.join(member);
         Assertions.assertThat(member).isSameAs(memberService.findOne(member.getId()));
     }
 
@@ -30,7 +30,7 @@ public class MemberServiceTest {
     @Transactional
     public void modifyTest(){
         Member member = getMember1();
-        memberService.save(member);
+        memberService.join(member);
         memberService.modifyNickname(member.getId(),"0606 개발중1");
         Assertions.assertThat(member.getNickname()).isEqualTo("0606 개발중1");
     }
@@ -39,10 +39,10 @@ public class MemberServiceTest {
     @Transactional
     public void reviewTest(){
         Member member1 = getMember1();
-        memberService.save(member1);
+        memberService.join(member1);
 
         Member member2 = getMember2();
-        memberService.save(member2);
+        memberService.join(member2);
 
         Review review = new Review(member2,member1,1);
 
@@ -58,9 +58,9 @@ public class MemberServiceTest {
         Member member2 = getMember2();
         Member member3 = getMember3();
 
-        memberService.save(member1);
-        memberService.save(member2);
-        memberService.save(member3);
+        memberService.join(member1);
+        memberService.join(member2);
+        memberService.join(member3);
 
         Review review1 = new Review(member1,member3,5);
         Review review2 = new Review(member2,member3,5);

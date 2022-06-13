@@ -24,9 +24,8 @@ public class Question {
     @JoinColumn(name = "study_id")
     private Study study;
 
-    public Question( String question, Study study) {
+    public Question( String question) {
         this.question = question;
-        this.study = study;
     }
 
 }

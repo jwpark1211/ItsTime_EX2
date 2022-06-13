@@ -14,13 +14,15 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    public void save(Member member){
+    public Long  save(Member member){
         //프론트에서 user id 값으로 받아오나?
         em.persist(member);
+        return member.getId();
     }
 
-    public void saveReview(Review review){
+    public Long saveReview(Review review){
         em.persist(review);
+        return review.getId();
     }
 
     public Member findOne(Long id){
@@ -32,11 +34,17 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public List<Review> findAllReview(Long memberId){
-        String jpql = "select r from Review r join r.recipient re where re.id = :memberId ";
-        return em.createQuery(jpql, Review.class)
-                .setParameter("memberId",memberId)
-                .getResultList();
+    public void removeMember(Long memberId){
+         em.remove(this.findOne(memberId));
     }
 
+    public List<Review> findAllReviewWithMember(Long id) {
+        return em.createQuery(
+                "select r from Review r"+
+                        " join fetch r.sender s"+
+                        " join fetch r.recipient re"+
+                        " where re.id = :id",Review.class)
+                .setParameter("id",id)
+                .getResultList();
+    }
 }

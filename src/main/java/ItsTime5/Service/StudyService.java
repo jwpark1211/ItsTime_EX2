@@ -19,16 +19,15 @@ public class StudyService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void save(Study study, Question...questions){
-        try {
-            studyRepository.save(study);
+    public Long save(Study study) {
+        Long id = studyRepository.save(study);
+        return id;
+    }
 
-            for (Question question : questions) {
-                studyRepository.saveQuestion(question);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("**study save error**");
+    @Transactional
+    public void saveQuestion(Question...questions){
+        for (Question question : questions) {
+            studyRepository.saveQuestion(question);
         }
     }
 
@@ -56,4 +55,16 @@ public class StudyService {
         return studyRepository.findAllQuestion(studyId);
     }
 
+    public List<Study> findAllWithQuestion() {
+        return studyRepository.findAllStudyWithQuestion();
+    }
+
+    public Study findOneWithQuestion(Long id) {
+        return studyRepository.findOneStudyWithQuestion(id);
+    }
+
+    @Transactional
+    public void removeStudy(Long id) {
+        studyRepository.removeStudy(id);
+    }
 }

@@ -18,33 +18,27 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void save(Member member) {
-        try {
-            memberRepository.save(member);
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("**member save error**");
-        }
+    public Long join(Member member) {
+           return memberRepository.save(member);
     }
 
     @Transactional
     public void modifyNickname(Long id, String nickname){
-        try{
-            Member member = memberRepository.findOne(id);
-            member.setNickname(nickname);
-        }catch(Exception e){
-            e.printStackTrace();
-            System.out.println("회원 조회가 잘못 되었습니다.");
-        }
+        Member member = memberRepository.findOne(id);
+        member.setNickname(nickname);
     }
 
     @Transactional
-    public void saveReview(Review review){
+    public Long saveReview(Review review){
         int amount=0;
-
-        memberRepository.saveReview(review);
         amount = (review.getStar()-3); //star 1~5라고 가정하고 3을 +0으로 둠
         review.getRecipient().modifyBattery(amount);
+        return memberRepository.saveReview(review);
+    }
+
+    @Transactional
+    public void removeMember(Long id){
+        memberRepository.removeMember(id);
     }
 
     public Member findOne(Long id){
@@ -55,5 +49,7 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public List<Review> findAllReview(Long memberId){return memberRepository.findAllReview(memberId);}
+    public List<Review> findAllReviewWithMember(Long id) {
+        return memberRepository.findAllReviewWithMember(id);
+    }
 }

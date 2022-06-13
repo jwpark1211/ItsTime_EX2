@@ -14,8 +14,9 @@ public class StudyRepository {
 
     private final EntityManager em;
 
-    public void save(Study study){
+    public Long save(Study study){
         em.persist(study);
+        return study.getId();
     }
 
     public void saveQuestion(Question question){
@@ -36,5 +37,24 @@ public class StudyRepository {
         return em.createQuery(jpql,Question.class)
                 .setParameter("studyId",studyId)
                 .getResultList();
+    }
+
+    public List<Study> findAllStudyWithQuestion() {
+        String jpql = "select distinct s from Study s join fetch s.questionList q";
+        return em.createQuery(jpql,Study.class)
+                .getResultList();
+    }
+
+    public Study findOneStudyWithQuestion(Long id) {
+        String jpql = "select distinct s from Study s join fetch s.questionList q "
+                + "where s.id = :id";
+        return em.createQuery(jpql,Study.class)
+                .setParameter("id",id)
+                .getSingleResult();
+    }
+
+    public void removeStudy(Long id) {
+        em.remove(this.findOne(id));
+
     }
 }
