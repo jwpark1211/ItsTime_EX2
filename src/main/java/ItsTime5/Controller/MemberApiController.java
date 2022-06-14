@@ -22,7 +22,7 @@ public class MemberApiController {
 
     /* [1] 사용자 신규 생성 */
     @PostMapping("/api/member")
-    public CreateMemberResponse saveMember(@RequestBody @Valid CreateMemberRequest request){
+    public  CreateMemberResponse saveMember(@RequestBody @Valid CreateMemberRequest request){
 
         Member member = new Member();
         MemberInfo info = new MemberInfo(request.getName(),request.getEmail(),request.getPassword());

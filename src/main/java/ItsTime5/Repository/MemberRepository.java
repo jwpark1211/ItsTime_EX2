@@ -14,30 +14,35 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    public Long  save(Member member){
-        //프론트에서 user id 값으로 받아오나?
+    //유저를 저장
+    public Long save(Member member){
         em.persist(member);
         return member.getId();
     }
 
-    public Long saveReview(Review review){
-        em.persist(review);
-        return review.getId();
+    //유저를 삭제
+    public void removeMember(Long memberId){
+        em.remove(this.findOne(memberId));
     }
 
+    //id 값으로 유저 가져오기
     public Member findOne(Long id){
         return em.find(Member.class,id);
     }
 
+    //모든 유저 가져오기
     public List<Member> findAll(){
         return em.createQuery("select m from Member m",Member.class)
                 .getResultList();
     }
 
-    public void removeMember(Long memberId){
-         em.remove(this.findOne(memberId));
+    //후기를 저장하기
+    public Long saveReview(Review review){
+        em.persist(review);
+        return review.getId();
     }
 
+    //유저 id를 통해 그 유저의 모든 리뷰의 정보를 가져오기
     public List<Review> findAllReviewWithMember(Long id) {
         return em.createQuery(
                 "select r from Review r"+

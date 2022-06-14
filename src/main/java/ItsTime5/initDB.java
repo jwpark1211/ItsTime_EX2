@@ -6,7 +6,9 @@ import ItsTime5.Domain.Member.Review;
 import ItsTime5.Domain.Study.Question;
 import ItsTime5.Domain.Study.Study;
 import ItsTime5.Domain.Study.StudyInfo;
+import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Service.MemberService;
+import ItsTime5.Service.StudyMemberService;
 import ItsTime5.Service.StudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,7 @@ public class initDB {
         private final EntityManager em;
         private final MemberService memberService;
         private final StudyService studyService;
+        private final StudyMemberService studyMemberService;
 
         public void dbInit(){
 
@@ -68,21 +71,24 @@ public class initDB {
             memberService.saveReview(review6);
 
             //studyInit
-            Study study1 = createStudy("자바스터디","성남,강남","월,화,수","대면",
-                    "자바,웹,코딩",4,"3개월 하실분");
+            Study study1 = createStudy("자바스터디","서울","월","대면",
+                    "프로그래밍",4,"3개월 하실분");
             em.persist(study1);
-            Study study2 = createStudy("C++스터디","동대문구","월,수","비대면",
-                    "게임,프로그래밍,C++",6,"성실하신분");
+            Study study2 = createStudy("C++스터디","수도권","월","비대면",
+                    "프로그래밍",6,"성실하신분");
             em.persist(study2);
-            Study study3 = createStudy("파이썬스터디","서초구","토","대면",
-                    "코딩,프로그래밍,파이썬",2,"해커톤 준비해요");
+            Study study3 = createStudy("파이썬스터디","서울","토","대면",
+                    "프로그래밍",2,"해커톤 준비해요");
             em.persist(study3);
-            Study study4 = createStudy("스타트업","대전","일","혼용",
-                    "유니티,게임,C++",9,"스타트업 하실 분 모집합니다. 개발기간은" +
+            Study study4 = createStudy("스타트업","대전","일","비대면",
+                    "프로그래밍",9,"스타트업 하실 분 모집합니다. 개발기간은" +
                             " 1년 정도로 잡고 있고 초기 서버 비용은 제가 부담합니다. 최소 2년 이상 개발해본 " +
                             "분들 위주로 지원 부탁드립니다. 제 이메일로 프로젝트 깃허브 주소 보내주시면 감사하겠습니다.");
 
             em.persist(study4);
+            Study study5 = createStudy("배드민턴 치실분","서울","월","대면",
+                    "취미",4,"같이 배드민턴 칩시다~~~~~");
+            em.persist(study5);
 
             //QuestionInit
             Question question1 = new Question("당신의 나이는?");
@@ -105,6 +111,26 @@ public class initDB {
             studyService.saveQuestion(question1,question2,question3,
                     question4,question5,question6,question7);
 
+            //StudyMemberInit
+            StudyMember studyMember1 = createStudyMember(member1.getId(),study1.getId());
+            StudyMember studyMember2 = createStudyMember(member2.getId(),study1.getId());
+            StudyMember studyMember3 = createStudyMember(member3.getId(),study1.getId());
+            StudyMember studyMember4 = createStudyMember(member4.getId(),study1.getId());
+            StudyMember studyMember5 = createStudyMember(member5.getId(),study1.getId());
+            StudyMember studyMember6 = createStudyMember(member5.getId(),study2.getId());
+
+            studyMemberService.save(studyMember1);
+            studyMemberService.save(studyMember2);
+            studyMemberService.save(studyMember3);
+            studyMemberService.save(studyMember4);
+            studyMemberService.save(studyMember5);
+            studyMemberService.save(studyMember6);
+
+            studyMemberService.joinStudy(studyMember1);
+            studyMemberService.joinStudy(studyMember2);
+            studyMemberService.joinStudy(studyMember3);
+            studyMemberService.joinStudy(studyMember6);
+
         }
 
         private Member createMember(String name, String email, String password, String nickname){
@@ -121,6 +147,12 @@ public class initDB {
                     isOnline,categories,personLimit,content);
             study.setStudyInfo(info);
             return study;
+        }
+        private StudyMember createStudyMember(Long memberId, Long studyId){
+            StudyMember studyMember = new StudyMember();
+            studyMember.setStudy(studyService.findOne(studyId));
+            studyMember.setMember(memberService.findOne(memberId));
+            return studyMember;
         }
     }
 }

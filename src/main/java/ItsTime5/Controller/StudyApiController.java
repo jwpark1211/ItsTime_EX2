@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,20 +32,23 @@ public class StudyApiController {
         StudyInfo studyInfo = new StudyInfo(request.getTitle(), request.getRegion(), request.getDayOfWeek(),
                 request.getIsOnline(), request.getCategories(), request.getPersonLimit(), request.getContent());
         study.setStudyInfo(studyInfo);
-        Long studyId = studyService.save(study);
+        Long studyId = studyService.save(study,request.getMemberId());
 
-        for (QuestionDTO questionDto : request.getQuestions()) {
-            Question question = new Question(questionDto.getQuestion());
-            studyService.saveQuestion(question);
-            study.setQuestion(question);
+        if(request.getQuestions()!=null) {
+            for (QuestionDTO questionDto : request.getQuestions()) {
+                Question question = new Question(questionDto.getQuestion());
+                studyService.saveQuestion(question);
+                study.setQuestion(question);
+            }
         }
-
 
         return new CreateStudyResponse(studyId);
     }
 
     @Data
     static class CreateStudyRequest {
+        @NotNull
+        private Long memberId;
         @NotEmpty
         private String title; //스터디제목
         private String region; //지역
@@ -165,7 +169,7 @@ public class StudyApiController {
 
     /* [5] 특정 스터디 삭제 */
     @DeleteMapping("/api/study/{id}")
-    public StudyResponse DeleteStudy(@PathVariable("id") Long id){
+    public StudyResponse RemoveStudy(@PathVariable("id") Long id){
         studyService.removeStudy(id);
         return new StudyResponse("delete success");
     }
@@ -177,10 +181,35 @@ public class StudyApiController {
         return new StudyResponse("end recruit success");
     }
 
-    /* [7] 키워드로 스터디 조회
+    /* [7] 키워드로 스터디 조회*/
     @GetMapping("/api/study/search")
-    public Result GetStudyWithKey(){
+    public Result GetStudyWithKey(@RequestBody SearchStudyRequest request){
+        List<Study> studyList = studyService.findStudyListByCondition(request.getDayOfWeek(),
+                request.getIsOnline(),request.getCategories());
+        List<SearchStudyResponse> result = studyList.stream()
+                .map(m -> new SearchStudyResponse(m.getId(),m.getStudyInfo().getIsOnline(),
+                        m.getStudyInfo().getCategories(),m.getStudyInfo().getTitle(),
+                        m.getStudyInfo().getTitle(),m.getStudyInfo().getPersonLimit()))
+                .collect(Collectors.toList());
+        return new Result(result);
+    }
 
-    }*/
+    @Data
+    @AllArgsConstructor
+    static class SearchStudyResponse {
+        private Long StudyId;
+        private String isOnline;
+        private String categories;
+        private String title;
+        private String region;
+        private int personLimit;
+    }
+
+    @Data
+    static class SearchStudyRequest{
+        private String dayOfWeek;
+        private String isOnline;
+        private String categories;
+    }
 
 }

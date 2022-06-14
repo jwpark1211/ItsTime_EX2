@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Lob;
 
 @Embeddable
 @Getter

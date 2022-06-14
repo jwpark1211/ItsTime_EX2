@@ -13,27 +13,43 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StudyMemberService {
 
+    /*@Transactional 안 붙은 건 조회만, 나머지는 추가적인 작업이 필요한 것*/
+
     private final StudyMemberRepository studyMemberRepository;
 
+    //스터디 유저 저장
     @Transactional
-    public void save(StudyMember studyMember, Answer ... answers){
-        try {
-            studyMemberRepository.save(studyMember);
+    public Long save(StudyMember studyMember){
+        Long id =studyMemberRepository.save(studyMember);
+        return id;
+    }
 
-            for (Answer answer : answers) {
-                studyMemberRepository.saveAnswer(answer);
-            }
+    //스터디 유저 탈퇴
+    @Transactional
+    public Long removeStudyMember(Long id){
+        StudyMember studyMember = studyMemberRepository.findOne(id);
+        studyMember.getStudy().modifyPersonLimit(+1);
+        return studyMemberRepository.removeStudyMember(id);
+    }
 
-        }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("**studyMember save error**");
+    //지원서 저장
+    @Transactional
+    public void saveAnswer(Answer ... answers){
+        for (Answer answer : answers) {
+            studyMemberRepository.saveAnswer(answer);
         }
     }
 
+    //스터디 유저 지원 수락
     @Transactional
     public void joinStudy(StudyMember studyMember){
         studyMember.setStatus(StudyMemberStatus.join);
         studyMember.getStudy().modifyPersonLimit(-1);
+    }
+
+    //스터디 유저 id로 찾기
+    public StudyMember findOne(Long id){
+        return studyMemberRepository.findOne(id);
     }
 
 }
