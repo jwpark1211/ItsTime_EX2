@@ -13,8 +13,8 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberInfo {
 
-    private String name;
-    private String email;
-    private String password;
+    private String name; //이름
+    private String email; //이메일
+    private String password; //비밀번호
 
 }

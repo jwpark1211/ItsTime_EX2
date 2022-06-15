@@ -42,7 +42,7 @@ public class StudyMemberRepository {
 
     //id 값을 통해 가져온 스터디 유저의 지원서 모두 가져오기
     public List<Answer> findAllAnswer(Long studyMemberId){
-        String jpql  = "select a from Answer a join a.studyMember s where s.id = :studyMemberId ";
+        String jpql  = "select a from Answer a join fetch a.studyMember s where s.id = :studyMemberId ";
         return em.createQuery(jpql,Answer.class)
                 .setParameter("studyMemberId",studyMemberId)
                 .getResultList();

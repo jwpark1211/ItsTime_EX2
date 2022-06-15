@@ -21,8 +21,11 @@ public class MemberRepository {
     }
 
     //유저를 삭제
-    public void removeMember(Long memberId){
-        em.remove(this.findOne(memberId));
+    public Long removeMember(Long memberId){
+        Member member = this.findOne(memberId);
+        Long id = member.getId();
+        em.remove(member);
+        return id;
     }
 
     //id 값으로 유저 가져오기

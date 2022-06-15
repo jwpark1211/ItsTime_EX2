@@ -98,5 +98,4 @@ public class StudyRepository {
                 .setParameter("id", id)
                 .getSingleResult();
     }
-
 }
