@@ -48,4 +48,12 @@ public class StudyMemberRepository {
                 .getResultList();
     }
 
+    //유저의 id 값을 통해 그 유저의 스터디 유저 전체 가져오기
+    public List<StudyMember> findAllStudyMemberWithMemberId(Long memberId){
+        String jpql = "select sm from StudyMember sm join fetch sm.member m where m.id = :memberId";
+        return em.createQuery(jpql, StudyMember.class)
+                .setParameter("memberId",memberId)
+                .getResultList();
+    }
+
 }

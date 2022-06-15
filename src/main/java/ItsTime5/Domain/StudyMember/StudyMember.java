@@ -3,7 +3,9 @@ package ItsTime5.Domain.StudyMember;
 import ItsTime5.Domain.Member.Member;
 import ItsTime5.Domain.Study.Study;
 import com.sun.istack.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyMember {
 
     @Id @GeneratedValue

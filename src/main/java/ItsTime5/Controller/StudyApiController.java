@@ -37,8 +37,8 @@ public class StudyApiController {
         if(request.getQuestions()!=null) {
             for (CreateQuestionDTO questionDto : request.getQuestions()) {
                 Question question = new Question(questionDto.getQuestion());
-                studyService.saveQuestion(question);
                 study.setQuestion(question);
+                studyService.saveQuestion(question);
             }
         }
         return new IdResponse(studyId);

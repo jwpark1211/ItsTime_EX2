@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -47,9 +49,23 @@ public class StudyMemberService {
         studyMember.getStudy().modifyPersonLimit(-1);
     }
 
+    //유저의 스터디 유저 전체 삭제하기
+    @Transactional
+    public void removeAllStudyMemberByMember(Long memberId){
+        List<StudyMember> studyMemberListOfMember = this.findAllStudyMemberWithMemberId(memberId);
+
+        for (StudyMember studyMember : studyMemberListOfMember) {
+            this.removeStudyMember(studyMember.getId());
+        }
+    }
+
     //스터디 유저 id로 찾기
     public StudyMember findOne(Long id){
         return studyMemberRepository.findOne(id);
     }
 
+    //유저 아이디로 유저의 스터디 유저 전체 가져오기
+    public List<StudyMember> findAllStudyMemberWithMemberId(Long memberId){
+        return studyMemberRepository.findAllStudyMemberWithMemberId(memberId);
+    }
 }

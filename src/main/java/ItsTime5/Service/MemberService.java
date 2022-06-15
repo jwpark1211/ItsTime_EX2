@@ -16,6 +16,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final StudyMemberService studyMemberService;
 
     /*@Transactional 안 붙은 건 조회만, 나머지는 추가적인 작업이 필요한 것*/
 
@@ -28,6 +29,7 @@ public class MemberService {
     //유저 탈퇴
     @Transactional
     public Long removeMember(Long id){
+        studyMemberService.removeAllStudyMemberByMember(id);
        return memberRepository.removeMember(id);
         /*유저의 후기는 cascade.All 상태이기 때문에 따로 로직을 두지 않음.
         => 보낸, 받은 후기 함께 삭제 + 변경된 배터리는 그대로 */
