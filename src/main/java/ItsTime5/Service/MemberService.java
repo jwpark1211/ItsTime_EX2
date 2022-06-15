@@ -27,8 +27,8 @@ public class MemberService {
 
     //유저 탈퇴
     @Transactional
-    public void removeMember(Long id){
-        memberRepository.removeMember(id);
+    public Long removeMember(Long id){
+       return memberRepository.removeMember(id);
         /*유저의 후기는 cascade.All 상태이기 때문에 따로 로직을 두지 않음.
         => 보낸, 받은 후기 함께 삭제 + 변경된 배터리는 그대로 */
     }
@@ -36,16 +36,17 @@ public class MemberService {
     //유저의 후기를 저장하고 배터리를 수정함.
     @Transactional
     public Long saveReview(Review review){
-        int amount = (review.getStar()-3); //star 1~5라고 가정하고 3을 +0으로 둠
+        int amount = (review.getStar()-3); //star 1~5라고 가정하고 3보다 작으면 battery -, 크면 +
         review.getRecipient().modifyBattery(amount);
         return memberRepository.saveReview(review);
     }
 
     //유저의 닉네임을 수정
     @Transactional
-    public void modifyNickname(Long id, String nickname){
+    public Long modifyNickname(Long id, String nickname){
         Member member = memberRepository.findOne(id);
         member.setNickname(nickname);
+        return member.getId();
     }
 
     //id를 통해 유저 찾아오기

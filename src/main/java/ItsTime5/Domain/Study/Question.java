@@ -18,11 +18,11 @@ public class Question {
     private Long id;
 
     @NotNull
-    private String question;
+    private String question; //설문 문항
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
-    private Study study;
+    private Study study; //어떤 스터디가 이 설문을 가지는지
 
     public Question( String question) {
         this.question = question;

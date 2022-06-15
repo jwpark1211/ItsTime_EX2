@@ -26,7 +26,7 @@ public class Review {
     private Member recipient; //받은 이
 
     @NotNull
-    private int Star;
+    private int Star; //후기 별 개수
 
     public Review(Member sender, Member recipient, int star) {
         this.sender = sender;

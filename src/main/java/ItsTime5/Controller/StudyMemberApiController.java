@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 public class StudyMemberApiController {
 
+    //아직 안 끝남......................................................미완성
+
     private final StudyMemberService studyMemberService;
     private final StudyService studyService;
     private final MemberService memberService;
@@ -23,9 +25,8 @@ public class StudyMemberApiController {
     /* [1] 스터디 멤버 신규 생성 */
     @PostMapping("/api/studyMember")
     public StudyMemberResponse saveMember(@RequestBody @Valid CreateStudyMemberRequest request){
-        StudyMember studyMember = new StudyMember();
-        studyMember.setMember(memberService.findOne(request.memberId));
-        studyMember.setStudy(studyService.findOne(request.studyId));
+        StudyMember studyMember = new StudyMember(memberService.findOne(request.memberId)
+                ,studyService.findOne(request.getStudyId()));
         studyMemberService.save(studyMember);
         return new StudyMemberResponse(studyMember.getId());
     }

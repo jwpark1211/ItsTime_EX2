@@ -32,9 +32,7 @@ public class StudyService {
         Long id = studyRepository.save(study); //스터디 저장
 
         Member member = memberRepository.findOne(memberId); //작성자 저장
-        StudyMember studyMember = new StudyMember();
-        studyMember.setMember(member);
-        studyMember.setStudy(study);
+        StudyMember studyMember = new StudyMember(member,study);
         studyMember.setGrade(MemberGrade.host);
         studyMemberService.joinStudy(studyMember);
         studyMemberService.save(studyMember);

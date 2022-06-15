@@ -112,12 +112,12 @@ public class initDB {
                     question4,question5,question6,question7);
 
             //StudyMemberInit
-            StudyMember studyMember1 = createStudyMember(member1.getId(),study1.getId());
-            StudyMember studyMember2 = createStudyMember(member2.getId(),study1.getId());
-            StudyMember studyMember3 = createStudyMember(member3.getId(),study1.getId());
-            StudyMember studyMember4 = createStudyMember(member4.getId(),study1.getId());
-            StudyMember studyMember5 = createStudyMember(member5.getId(),study1.getId());
-            StudyMember studyMember6 = createStudyMember(member5.getId(),study2.getId());
+            StudyMember studyMember1 = new StudyMember(member1,study1);
+            StudyMember studyMember2 = new StudyMember(member2,study1);
+            StudyMember studyMember3 = new StudyMember(member3,study1);
+            StudyMember studyMember4 = new StudyMember(member4,study1);
+            StudyMember studyMember5 = new StudyMember(member5,study1);
+            StudyMember studyMember6 = new StudyMember(member5,study2);
 
             studyMemberService.save(studyMember1);
             studyMemberService.save(studyMember2);
@@ -133,6 +133,8 @@ public class initDB {
 
         }
 
+        //==============================[method]==============================//
+
         private Member createMember(String name, String email, String password, String nickname){
             Member member = new Member();
             MemberInfo info = new MemberInfo(name,email,password);
@@ -147,12 +149,6 @@ public class initDB {
                     isOnline,categories,personLimit,content);
             study.setStudyInfo(info);
             return study;
-        }
-        private StudyMember createStudyMember(Long memberId, Long studyId){
-            StudyMember studyMember = new StudyMember();
-            studyMember.setStudy(studyService.findOne(studyId));
-            studyMember.setMember(memberService.findOne(memberId));
-            return studyMember;
         }
     }
 }

@@ -17,16 +17,17 @@ public class Study{
     @Column(name = "study_id")
     private Long id;
 
-    private StudyInfo studyInfo;
+    private StudyInfo studyInfo; //스터디에 필요한 정보들
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-    private List<Question> questionList = new ArrayList<>();
+    private List<Question> questionList = new ArrayList<>(); //스터디의 설문 문항들
 
     @Enumerated(EnumType.STRING)
-    private RecruitStatus status = RecruitStatus.recruit;
-    private LocalDateTime postTime = LocalDateTime.now();
+    private RecruitStatus status = RecruitStatus.recruit; //모집 status
+    private LocalDateTime postTime = LocalDateTime.now(); //스터디 모집 게시글 게시 시간
 
     public void modifyPersonLimit(int amount){
+        //인원 제한 관리
         studyInfo.modifyPersonLimit(amount);
     }
 
