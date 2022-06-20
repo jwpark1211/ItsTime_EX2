@@ -6,6 +6,7 @@ import ItsTime5.Domain.Member.Review;
 import ItsTime5.Domain.Study.Question;
 import ItsTime5.Domain.Study.Study;
 import ItsTime5.Domain.Study.StudyInfo;
+import ItsTime5.Domain.StudyMember.Answer;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Service.MemberService;
 import ItsTime5.Service.StudyMemberService;
@@ -130,6 +131,25 @@ public class initDB {
             studyMemberService.joinStudy(studyMember2);
             studyMemberService.joinStudy(studyMember3);
             studyMemberService.joinStudy(studyMember6);
+
+            //AnswerInit
+            Answer answer1 = new Answer(0,"당신의 나이는?","25",studyMember1);
+            Answer answer2 = new Answer(1,"당신의 이름은?","박정운",studyMember1);
+            Answer answer3 = new Answer(0,"당신의 나이는?","23",studyMember2);
+            Answer answer4 = new Answer(0,"개발경험은?","2회",studyMember3);
+            Answer answer5 = new Answer(0,"사용 언어는?","java",studyMember6);
+
+            answer1.getStudyMember().setAnswer(answer1);
+            answer2.getStudyMember().setAnswer(answer2);
+            answer3.getStudyMember().setAnswer(answer3);
+            answer4.getStudyMember().setAnswer(answer4);
+            answer5.getStudyMember().setAnswer(answer5);
+
+            studyMemberService.saveAnswer(answer1);
+            studyMemberService.saveAnswer(answer2);
+            studyMemberService.saveAnswer(answer3);
+            studyMemberService.saveAnswer(answer4);
+            studyMemberService.saveAnswer(answer5);
 
         }
 

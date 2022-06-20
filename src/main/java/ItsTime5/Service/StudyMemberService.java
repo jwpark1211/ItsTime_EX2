@@ -36,10 +36,8 @@ public class StudyMemberService {
 
     //지원서 저장
     @Transactional
-    public void saveAnswer(Answer ... answers){
-        for (Answer answer : answers) {
-            studyMemberRepository.saveAnswer(answer);
-        }
+    public void saveAnswer(Answer answer){
+        studyMemberRepository.saveAnswer(answer);
     }
 
     //스터디 유저 지원 수락

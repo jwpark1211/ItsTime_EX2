@@ -1,5 +1,6 @@
 package ItsTime5.Controller;
 
+import ItsTime5.Domain.StudyMember.Answer;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Service.MemberService;
 import ItsTime5.Service.StudyMemberService;
@@ -11,12 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class StudyMemberApiController {
-
-    //아직 안 끝남......................................................미완성
 
     private final StudyMemberService studyMemberService;
     private final StudyService studyService;
@@ -24,20 +24,20 @@ public class StudyMemberApiController {
 
     /* [1] 스터디 멤버 신규 생성 */
     @PostMapping("/api/studyMember")
-    public StudyMemberResponse saveMember(@RequestBody @Valid CreateStudyMemberRequest request){
+    public IdResponse saveMember(@RequestBody @Valid CreateStudyMemberRequest request){
         StudyMember studyMember = new StudyMember(memberService.findOne(request.memberId)
                 ,studyService.findOne(request.getStudyId()));
         studyMemberService.save(studyMember);
-        return new StudyMemberResponse(studyMember.getId());
+        return new IdResponse(studyMember.getId());
     }
 
-    @Data
+    @Data // [1] [2] [3] [4] Response
     @AllArgsConstructor
-    static class StudyMemberResponse{
+    static class IdResponse{
         private Long id;
     }
 
-    @Data
+    @Data // [1] Request
     static class CreateStudyMemberRequest{
         @NotNull
         private Long memberId;
@@ -47,10 +47,10 @@ public class StudyMemberApiController {
 
     /* [2] 특정 스터디 멤버 지원 수락 */
     @PostMapping("/api/studyMember/{id}")
-    public StudyMemberResponse joinStudyMember(@PathVariable("id")Long id){
+    public IdResponse joinStudyMember(@PathVariable("id")Long id){
         StudyMember studyMember = studyMemberService.findOne(id);
         studyMemberService.joinStudy(studyMember);
-        return new StudyMemberResponse(studyMember.getId());
+        return new IdResponse(studyMember.getId());
     }
 
     @Data
@@ -61,8 +61,36 @@ public class StudyMemberApiController {
 
     /* [3] 특정 스터디 멤버 삭제 */
     @DeleteMapping("/api/studyMember/{id}")
-    public StudyMemberResponse deleteStudyMember(@PathVariable("id")Long id){
+    public IdResponse deleteStudyMember(@PathVariable("id")Long id){
         Long returnId = studyMemberService.removeStudyMember(id);
-        return new StudyMemberResponse(returnId);
+        return new IdResponse(returnId);
+    }
+
+    /* [4] 특정 스터디 멤버 지원서 생성 */
+    @PostMapping("/api/studyMember/{id}/application")
+    public IdResponse saveMemberApplication(@PathVariable("id")Long id, @RequestBody @Valid saveApplicationRequest request){
+        StudyMember studyMember = studyMemberService.findOne(id);
+
+        for(CreateAnswerDTO answerDTO : request.getAnswers()){
+            Answer answer = new Answer(answerDTO.getSequence(),answerDTO.getQuestion(),
+                    answerDTO.getAnswer(),studyMember);
+            System.out.println("sequence:"+answerDTO.getSequence()+"answer"+answerDTO.getAnswer());
+            studyMember.setAnswer(answer);
+            studyMemberService.saveAnswer(answer);
+            }
+
+        return new IdResponse(id);
+    }
+
+    @Data //[4] Request
+    static class saveApplicationRequest{
+        private List<CreateAnswerDTO> answers;
+    }
+
+    @Data //[4]-(1) Request
+    static class CreateAnswerDTO{
+        private int sequence;
+        private String question;
+        private String answer;
     }
 }
