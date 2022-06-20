@@ -5,12 +5,11 @@ spring:
     username: root
     password: Wjddns8509!
 
-
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      format_sql: true
       ddl-auto: none
+      format_sql: true
     properties:
       hibernate:
         show_sql: true
