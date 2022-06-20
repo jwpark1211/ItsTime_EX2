@@ -14,7 +14,7 @@ public class Answer {
     private Long id;
 
     private int sequence; // 순서
-    private String question; // 설문 문항 [설문 문항이 변경될 것을 대비해 따로 저장함]
+    private String question; // 설문 문항 [설문 문항이 변경될 것을 대비해 따로 저장]
     private String answer; //설문 답변
 
     @ManyToOne(fetch = FetchType.LAZY)
