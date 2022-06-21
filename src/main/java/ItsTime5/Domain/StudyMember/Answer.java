@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Answer {
 
     @Id @GeneratedValue
-    @Column(name = "application_id")
+    @Column(name = "answer_id")
     private Long id;
 
     private int sequence; // 순서
