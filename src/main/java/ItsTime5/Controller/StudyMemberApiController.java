@@ -1,6 +1,7 @@
 package ItsTime5.Controller;
 
 import ItsTime5.Domain.StudyMember.Answer;
+import ItsTime5.Domain.StudyMember.Comment;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Service.MemberService;
 import ItsTime5.Service.StudyMemberService;
@@ -28,6 +29,15 @@ public class StudyMemberApiController {
         StudyMember studyMember = new StudyMember(memberService.findOne(request.memberId)
                 ,studyService.findOne(request.getStudyId()));
         studyMemberService.save(studyMember);
+
+        for(CreateAnswerDTO answerDTO : request.getAnswers()){
+            Answer answer = new Answer(answerDTO.getSequence(),answerDTO.getQuestion(),
+                    answerDTO.getAnswer(),studyMember);
+            System.out.println("sequence:"+answerDTO.getSequence()+"answer"+answerDTO.getAnswer());
+            studyMember.setAnswer(answer);
+            studyMemberService.saveAnswer(answer);
+        }
+
         return new IdResponse(studyMember.getId());
     }
 
@@ -43,6 +53,14 @@ public class StudyMemberApiController {
         private Long memberId;
         @NotNull
         private Long studyId;
+        private List<CreateAnswerDTO> answers;
+    }
+
+    @Data //[1]-(1) Request
+    static class CreateAnswerDTO{
+        private int sequence;
+        private String question;
+        private String answer;
     }
 
     /* [2] 특정 스터디 멤버 지원 수락 */
@@ -66,31 +84,50 @@ public class StudyMemberApiController {
         return new IdResponse(returnId);
     }
 
-    /* [4] 특정 스터디 멤버 지원서 생성 */
-    @PostMapping("/api/studyMember/{id}/application")
-    public IdResponse saveMemberApplication(@PathVariable("id")Long id, @RequestBody @Valid saveApplicationRequest request){
+    /* [4] 특정 유저가 작성한(HOST) 스터디 정보 조회
+    @GetMapping("/api/studyMember/study/{id}")
+    public Result getHostStudyInfo(@PathVariable("id")Long id){
+        Member member = memberService.findOne(id);
+        List<Study> studyList =
+
+    }*/
+
+    /* [5] 특정 스터디 유저 댓글 생성 */
+    @PostMapping("/api/studyMember/{id}/comment")
+    public IdResponse saveComment(@PathVariable("id")Long id,
+                                  @RequestBody @Valid CreateCommentRequest request){
         StudyMember studyMember = studyMemberService.findOne(id);
+        Comment comment = new Comment(request.getComment(),request.getGroupNum(),request.getLayer(),
+                request.getSequence(),studyMember);
+      Long returnId = studyMemberService.saveComment(comment);
+      return new IdResponse(returnId);
+    }
+    @Data // [1] Request
+    static class CreateCommentRequest{
+        @NotNull
+        private String comment;
+        private int groupNum; //댓글 그룹
+        private int layer; //계층
+        private int sequence; //순서
+    }
 
-        for(CreateAnswerDTO answerDTO : request.getAnswers()){
-            Answer answer = new Answer(answerDTO.getSequence(),answerDTO.getQuestion(),
-                    answerDTO.getAnswer(),studyMember);
-            System.out.println("sequence:"+answerDTO.getSequence()+"answer"+answerDTO.getAnswer());
-            studyMember.setAnswer(answer);
-            studyMemberService.saveAnswer(answer);
-            }
-
+    /* [6] 특정 스터디 유저 댓글 수정 */
+    @PutMapping("/api/studyMember/{id}/comment")
+    public IdResponse modifyComment(@PathVariable("id")Long id,
+                                    @RequestBody @Valid ModifyCommentRequest request){
+        studyMemberService.modifyComment(id,request.getComment());
         return new IdResponse(id);
     }
-
-    @Data //[4] Request
-    static class saveApplicationRequest{
-        private List<CreateAnswerDTO> answers;
+    @Data // [1] Request
+    static class ModifyCommentRequest{
+        @NotNull
+        private String comment;
     }
 
-    @Data //[4]-(1) Request
-    static class CreateAnswerDTO{
-        private int sequence;
-        private String question;
-        private String answer;
+    /* [7] 특정 스터디 유저 댓글 삭제 */
+    @DeleteMapping("/api/studyMember/{id}/comment")
+    public IdResponse deleteComment(@PathVariable("id") Long id){
+        studyMemberService.removeComment(id);
+        return new IdResponse(id);
     }
 }

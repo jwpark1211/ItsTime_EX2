@@ -7,6 +7,8 @@ import ItsTime5.Domain.Study.Question;
 import ItsTime5.Domain.Study.Study;
 import ItsTime5.Domain.Study.StudyInfo;
 import ItsTime5.Domain.StudyMember.Answer;
+import ItsTime5.Domain.StudyMember.Comment;
+import ItsTime5.Domain.StudyMember.MemberGrade;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Service.MemberService;
 import ItsTime5.Service.StudyMemberService;
@@ -44,17 +46,17 @@ public class initDB {
             System.out.println("== init DATA ==");
 
             //memberInit
-            Member member1 = createMember("박정운", "wjddns@naver.com","1234","잇타정운");
+            Member member1 = createMember("박정운", "wjddns@naver.com","잇타정운");
             em.persist(member1);
-            Member member2 = createMember("송혜수", "gPtn@gmail.com","1234","잇타혜수");
+            Member member2 = createMember("송혜수", "gPtn@gmail.com","잇타혜수");
             em.persist(member2);
-            Member member3 = createMember("김의진","dmlwls@naver.com","1234","잇타의진");
+            Member member3 = createMember("김의진","dmlwls@naver.com","잇타의진");
             em.persist(member3);
-            Member member4 = createMember("박지민", "wlals@gmail.com","1234","잇타지민");
+            Member member4 = createMember("박지성", "wltjd@gmail.com","그냥지성");
             em.persist(member4);
-            Member member5 = createMember("정은정", "dmwsjd@gmail.com","1234","잇타은정");
+            Member member5 = createMember("정은정", "dmwsjd@gmail.com","잇타은정");
             em.persist(member5);
-            Member member6 = createMember("김사은", "tkdms@naver.com","1234","잇타사은");
+            Member member6 = createMember("김사은", "tkdms@naver.com","잇타사은");
             em.persist(member6);
 
             //reviewInit
@@ -120,17 +122,31 @@ public class initDB {
             StudyMember studyMember5 = new StudyMember(member5,study1);
             StudyMember studyMember6 = new StudyMember(member5,study2);
 
+            //StudyMemberInit_Host
+            StudyMember studyMember7 = new StudyMember(member1,study2);
+            studyMember7.setGrade(MemberGrade.host);
+            StudyMember studyMember8 = new StudyMember(member1,study3);
+            studyMember8.setGrade(MemberGrade.host);
+            StudyMember studyMember9 = new StudyMember(member1,study4);
+            studyMember9.setGrade(MemberGrade.host);
+
             studyMemberService.save(studyMember1);
             studyMemberService.save(studyMember2);
             studyMemberService.save(studyMember3);
             studyMemberService.save(studyMember4);
             studyMemberService.save(studyMember5);
             studyMemberService.save(studyMember6);
+            studyMemberService.save(studyMember7);
+            studyMemberService.save(studyMember8);
+            studyMemberService.save(studyMember9);
 
             studyMemberService.joinStudy(studyMember1);
             studyMemberService.joinStudy(studyMember2);
             studyMemberService.joinStudy(studyMember3);
             studyMemberService.joinStudy(studyMember6);
+            studyMemberService.joinStudy(studyMember7);
+            studyMemberService.joinStudy(studyMember8);
+            studyMemberService.joinStudy(studyMember9);
 
             //AnswerInit
             Answer answer1 = new Answer(0,"당신의 나이는?","25",studyMember1);
@@ -151,13 +167,24 @@ public class initDB {
             studyMemberService.saveAnswer(answer4);
             studyMemberService.saveAnswer(answer5);
 
+            //CommentInit
+            Comment comment1 = new Comment("존나존나하기싫어",0,0,0,studyMember1);
+            Comment comment2 = new Comment("으아아ㅏ아앙",0,1,0,studyMember2);
+            Comment comment3 = new Comment("지금은 새벽 3시...",0,1,1,studyMember1);
+            Comment comment4 = new Comment("흐으으아앙",1,0,1,studyMember3);
+
+            studyMemberService.saveComment(comment1);
+            studyMemberService.saveComment(comment2);
+            studyMemberService.saveComment(comment3);
+            studyMemberService.saveComment(comment4);
+
         }
 
         //==============================[method]==============================//
 
-        private Member createMember(String name, String email, String password, String nickname){
+        private Member createMember(String name, String email, String nickname){
             Member member = new Member();
-            MemberInfo info = new MemberInfo(name,email,password);
+            MemberInfo info = new MemberInfo(name,email);
             member.setInfo(info);
             member.setNickname(nickname);
             return member;

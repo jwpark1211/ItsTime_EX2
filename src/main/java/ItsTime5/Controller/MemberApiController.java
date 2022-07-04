@@ -25,7 +25,7 @@ public class MemberApiController {
     public IdResponse saveMember(@RequestBody @Valid CreateMemberRequest request){
 
         Member member = new Member();
-        MemberInfo info = new MemberInfo(request.getName(),request.getEmail(),request.getPassword());
+        MemberInfo info = new MemberInfo(request.getName(),request.getEmail());
         member.setInfo(info);
         member.setNickname(request.nickname);
         Long id = memberService.join(member);
@@ -52,7 +52,7 @@ public class MemberApiController {
                 member.getInfo().getEmail(),member.getNickname(),member.getBattery());
     }
 
-    /* [4] 특정 사용자 기본 정보 수정 */
+    /* [4] 특정 사용자 닉네임 수정 */
     @PutMapping("/api/member/{id}")
     public IdResponse updateMember(@PathVariable("id")Long id,
                                    @RequestBody @Valid UpdateMemberRequest request){
@@ -102,7 +102,6 @@ public class MemberApiController {
         @NotEmpty
         private String name;
         private String email;
-        private String password;
         @NotEmpty
         private String nickname;
     }

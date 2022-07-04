@@ -63,7 +63,6 @@ public class StudyApiController {
     }
 
     /* [4] 특정 스터디 기본 정보를 수정 */
-    // +) 질문 수정 기능 존재하는지 확인해보기
     @PutMapping("/api/study/{id}") //put method 이기 때문에 전체 필드를 갈아끼움 **주의**
     public IdResponse ModifyStudyInfo(@PathVariable("id") Long id,
                                          @RequestBody @Valid UpdateStudyRequest request ){
@@ -99,6 +98,13 @@ public class StudyApiController {
                         m.getStudyInfo().getTitle(),m.getStudyInfo().getPersonLimit()))
                 .collect(Collectors.toList());
         return new Result(result);
+    }
+
+    /*[8] 특정 스터디 종료 */
+    @PostMapping("/api/study/terminate/{id}")
+    public IdResponse TerminateRecruit(@PathVariable("id")Long id){
+        studyService.terminateRecruit(id);
+        return new IdResponse(id);
     }
 
     /*================================<<DTO>>====================================*/

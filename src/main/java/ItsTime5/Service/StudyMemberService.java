@@ -1,6 +1,7 @@
 package ItsTime5.Service;
 
 import ItsTime5.Domain.StudyMember.Answer;
+import ItsTime5.Domain.StudyMember.Comment;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import ItsTime5.Domain.StudyMember.StudyMemberStatus;
 import ItsTime5.Repository.StudyMemberRepository;
@@ -40,6 +41,20 @@ public class StudyMemberService {
         studyMemberRepository.saveAnswer(answer);
     }
 
+    //댓글 저장
+    @Transactional
+    public Long saveComment(Comment comment){
+        Long id = studyMemberRepository.saveComment(comment);
+        return id;
+    }
+
+    //댓글 수정
+    @Transactional
+    public void modifyComment(Long id, String modifyComment){
+        Comment comment = studyMemberRepository.findOneComment(id);
+        comment.setComment(modifyComment);
+    }
+
     //스터디 유저 지원 수락
     @Transactional
     public void joinStudy(StudyMember studyMember){
@@ -57,6 +72,10 @@ public class StudyMemberService {
         }
     }
 
+    @Transactional
+    public void removeComment(Long id){
+        studyMemberRepository.removeComment(id);
+    }
     //스터디 유저 id로 찾기
     public StudyMember findOne(Long id){
         return studyMemberRepository.findOne(id);
