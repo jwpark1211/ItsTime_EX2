@@ -1,6 +1,7 @@
 package ItsTime5.Repository;
 
 import ItsTime5.Domain.StudyMember.Answer;
+import ItsTime5.Domain.StudyMember.Comment;
 import ItsTime5.Domain.StudyMember.StudyMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,22 @@ public class StudyMemberRepository {
 
     //지원서 저장하기
     public void saveAnswer(Answer answer){ em.persist(answer);}
+
+    //id 값을 통해 댓글 가져오기
+    public Comment findOneComment(Long id){
+        return em.find(Comment.class,id);
+    }
+
+    //댓글 저장하기
+    public Long saveComment(Comment comment){
+        em.persist(comment);
+        return comment.getId();
+    }
+
+    //댓글 삭제하기
+    public void removeComment(Long id){
+        em.remove(this.findOneComment(id));
+    }
 
     //id 값을 통해 가져온 스터디 유저의 지원서 모두 가져오기
     public List<Answer> findAllAnswer(Long studyMemberId){

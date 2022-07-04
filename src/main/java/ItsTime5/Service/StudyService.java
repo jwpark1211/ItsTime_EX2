@@ -98,4 +98,10 @@ public class StudyService {
         return studyRepository.findStudyListByCondition(dayOfWeek,isOnline,categories);
     }
 
+    //스터디를 종료함
+    @Transactional
+    public void terminateRecruit(Long id) {
+        Study study = studyRepository.findOne(id);
+        study.setStatus(RecruitStatus.terminate);
+    }
 }

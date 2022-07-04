@@ -34,6 +34,9 @@ public class StudyMember {
     @OneToMany(mappedBy = "studyMember",cascade = CascadeType.ALL)
     private List<Answer> answerList = new ArrayList<>(); //설문 답변
 
+    @OneToMany(mappedBy = "studyMember",cascade = CascadeType.ALL)
+    private List<Comment> commentList = new ArrayList<>(); //댓글 List
+
     @Enumerated(EnumType.STRING)
     private StudyMemberStatus status = StudyMemberStatus.submit;
     /*스터디 유저의 현재 status -> * 해당 스터디에 지원하는 순간 스터디 멤버 정보가 설문과 함께 저장되고,
@@ -51,5 +54,10 @@ public class StudyMember {
     public void setAnswer(Answer answer){
         answerList.add(answer);
         answer.setStudyMember(this);
+    }
+
+    public void setComment(Comment comment){
+        commentList.add(comment);
+        comment.setStudyMember(this);
     }
 }
