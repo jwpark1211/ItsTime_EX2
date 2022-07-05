@@ -22,6 +22,4 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
-server:
-  port: 3000
 
