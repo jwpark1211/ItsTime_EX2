@@ -1,19 +1,17 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ustudy.cbjawoubagkb.ap-northeast-2.rds.amazonaws.com
+    url: jdbc:mysql://ustudy.cbjawoubagkb.ap-northeast-2.rds.amazonaws.com:3306/ustudy
     username: jeongwoon
     password: Wjddns8509!
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: true
     hibernate:
-      ddl-auto: none
       format_sql: true
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+      ddl-auto: none
 
 logging:
   level:
@@ -24,4 +22,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+server:
+  port: 8081
 
