@@ -1,14 +1,14 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/test?user=root
-    username: root
+    url: ustudy.cbjawoubagkb.ap-northeast-2.rds.amazonaws.com
+    username: jeongwoon
     password: Wjddns8509!
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
       format_sql: true
     properties:
       hibernate:
