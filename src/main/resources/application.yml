@@ -23,5 +23,5 @@ logging:
             sql:
               BasicBinder: TRACE
 server:
-  port: 8081
+  port: 3000
 
