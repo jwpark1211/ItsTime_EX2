@@ -17,12 +17,13 @@ public class StudyInfo {
     private String categories; //공부카테고리
     private int personLimit; //인원제한
     private String content; //소개줄글
+    private String notification;
 
     protected StudyInfo() {
     }
 
     public void modifyAll(String title, String region, String dayOfWeek,
-                          String isOnline, String categories, int personLimit, String content){
+                          String isOnline, String categories, int personLimit, String content,String notification){
         this.title = title;
         this.region = region;
         this.dayOfWeek = dayOfWeek;
@@ -30,6 +31,7 @@ public class StudyInfo {
         this.categories = categories;
         this.personLimit = personLimit;
         this.content = content;
+        this.notification = notification;
     }
 
     public void modifyPersonLimit(int amount){

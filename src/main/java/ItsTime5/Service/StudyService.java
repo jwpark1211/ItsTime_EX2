@@ -33,9 +33,10 @@ public class StudyService {
 
         Member member = memberRepository.findOne(memberId); //작성자 저장
         StudyMember studyMember = new StudyMember(member,study);
-        studyMember.setGrade(MemberGrade.host);
-        studyMemberService.joinStudy(studyMember);
         studyMemberService.save(studyMember);
+        studyMember.setGrade(MemberGrade.host);
+        studyMemberService.joinStudy(studyMember.getId());
+
 
         return id; //스터디 id 리턴
     }

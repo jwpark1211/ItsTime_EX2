@@ -1,5 +1,7 @@
 package ItsTime5.Repository;
 
+import ItsTime5.Domain.Member.Member;
+import ItsTime5.Domain.Study.Study;
 import ItsTime5.Domain.StudyMember.Answer;
 import ItsTime5.Domain.StudyMember.Comment;
 import ItsTime5.Domain.StudyMember.StudyMember;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.print.DocFlavor;
 import java.util.List;
 
 @Repository
@@ -73,4 +76,28 @@ public class StudyMemberRepository {
                 .getResultList();
     }
 
+
+    //스터디 유저의 id 값을 통해 그 유저의 스터디 가져오기
+    public Study findAllStudyWithStudyMemberId(Long studyMemberId){
+        String jpql = "select s from StudyMember sm join sm.study s where sm.id = :studyMemberId";
+        return em.createQuery(jpql,Study.class)
+                .setParameter("studyMemberId",studyMemberId)
+                .getSingleResult();
+    }
+
+    //스터디 유저의 id 값을 통해 그 스터디 유저의 member 가져오기
+    public Member findMemberWithStudyMemberId(Long studyMemberId){
+        String jpql  = "select m from StudyMember sm join sm.member m where sm.id = :studyMemberId";
+        return em.createQuery(jpql,Member.class)
+                .setParameter("studyMemberId",studyMemberId)
+                .getSingleResult();
+    }
+
+    //스터디의 id 값을 통해 그 스터디의 스터디 유저 모두 가져오기
+    public List<StudyMember> findStudyMemberWithStudyId(Long studyId){
+        String jpql = "select sm from StudyMember sm join fetch sm.study s where s.id = :studyId";
+        return em.createQuery(jpql,StudyMember.class)
+                .setParameter("studyId",studyId)
+                .getResultList();
+    }
 }

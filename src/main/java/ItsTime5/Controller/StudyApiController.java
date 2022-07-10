@@ -25,12 +25,13 @@ public class StudyApiController {
 
     private final StudyService studyService;
 
-    /* [1] 스터디 신규 생성 */
+    /* [1] 스터디 신규 생성 */ //
     @PostMapping("/api/study")
     public IdResponse saveStudy(@RequestBody @Valid CreateStudyRequest request) {
         Study study = new Study();
         StudyInfo studyInfo = new StudyInfo(request.getTitle(), request.getRegion(), request.getDayOfWeek(),
-                request.getIsOnline(), request.getCategories(), request.getPersonLimit(), request.getContent());
+                request.getIsOnline(), request.getCategories(), request.getPersonLimit(),
+                request.getContent(),request.getNotification());
         study.setStudyInfo(studyInfo);
         Long studyId = studyService.save(study,request.getMemberId());
 
@@ -44,7 +45,7 @@ public class StudyApiController {
         return new IdResponse(studyId);
     }
 
-    /* [2] 스터디 일괄 조회  => 1:m 페치 조인으로!*/
+    /* [2] 스터디 일괄 조회  => 1:m 페치 조인으로!*/ //
     @GetMapping("/api/study")
     public Result getAllStudy() {
         List<Study> studyList = studyService.findAllWithQuestion();
@@ -54,7 +55,7 @@ public class StudyApiController {
         return new Result(result);
     }
 
-    /* [3] 특정 스터디 기본 정보를 조회 */
+    /* [3] 특정 스터디 기본 정보를 조회 */ //
     @GetMapping("/api/study/{id}")
     public GetAllStudyInfoResponse GetOneStudy(@PathVariable("id") Long id){
         Study study = studyService.findOneWithQuestion(id);
@@ -62,32 +63,33 @@ public class StudyApiController {
         return studyDTO;
     }
 
-    /* [4] 특정 스터디 기본 정보를 수정 */
+    /* [4] 특정 스터디 기본 정보를 수정 */ //
     @PutMapping("/api/study/{id}") //put method 이기 때문에 전체 필드를 갈아끼움 **주의**
     public IdResponse ModifyStudyInfo(@PathVariable("id") Long id,
                                          @RequestBody @Valid UpdateStudyRequest request ){
         StudyInfo info = new StudyInfo(request.getTitle(),request.getRegion(),request.getDayOfWeek()
-        , request.getIsOnline(),request.getCategories(),request.getPersonLimit(),request.getContent());
+        , request.getIsOnline(),request.getCategories(),
+                request.getPersonLimit(),request.getContent(),request.getNotification());
         studyService.modifyStudyInfo(id, info);
 
         return new IdResponse(id);
     }
 
-    /* [5] 특정 스터디 삭제 */
+    /* [5] 특정 스터디 삭제
     @DeleteMapping("/api/study/{id}")
     public IdResponse RemoveStudy(@PathVariable("id") Long id){
         studyService.removeStudy(id);
         return new IdResponse(id);
-    }
+    }*/
 
-    /* [6] 특정 스터디 모집 마감 */
+    /* [6] 특정 스터디 모집 마감 */ //
     @PostMapping("/api/study/{id}")
     public IdResponse EndRecruit(@PathVariable("id") Long id){
         studyService.endRecruit(id);
         return new IdResponse(id);
     }
 
-    /* [7] 키워드로 스터디 조회*/
+    /* [7] 키워드로 스터디 조회*/ //
     @GetMapping("/api/study/search")
     public Result GetStudyWithKey(@RequestBody SearchStudyRequest request){
         List<Study> studyList = studyService.findStudyListByCondition(request.getDayOfWeek(),
@@ -95,12 +97,12 @@ public class StudyApiController {
         List<SearchStudyResponse> result = studyList.stream()
                 .map(m -> new SearchStudyResponse(m.getId(),m.getStudyInfo().getIsOnline(),
                         m.getStudyInfo().getCategories(),m.getStudyInfo().getTitle(),
-                        m.getStudyInfo().getTitle(),m.getStudyInfo().getPersonLimit()))
+                        m.getStudyInfo().getRegion(),m.getStudyInfo().getPersonLimit()))
                 .collect(Collectors.toList());
         return new Result(result);
     }
 
-    /*[8] 특정 스터디 종료 */
+    /*[8] 특정 스터디 종료 */ //
     @PostMapping("/api/study/terminate/{id}")
     public IdResponse TerminateRecruit(@PathVariable("id")Long id){
         studyService.terminateRecruit(id);
@@ -127,6 +129,7 @@ public class StudyApiController {
         private String categories; //공부카테고리
         private int personLimit; //인원제한
         private String content; //소개줄글
+        private String notification;
         private List<CreateQuestionDTO> questions;
     }
 
@@ -144,6 +147,7 @@ public class StudyApiController {
         private String categories; //공부카테고리
         private int personLimit; //인원제한
         private String content; //소개줄글
+        private String notification;
     }
 
     @Data //[7] Request
@@ -171,6 +175,7 @@ public class StudyApiController {
         private String content; //소개줄글
         private RecruitStatus status; //모집상태
         private LocalDateTime postTime; //게시시간
+        private String notification;
         private List<QuestionDTO2> questions; //질문들
 
         public GetAllStudyInfoResponse(Study study) {
@@ -184,6 +189,7 @@ public class StudyApiController {
             content = study.getStudyInfo().getContent();
             status = study.getStatus();
             postTime = study.getPostTime();
+            notification = study.getStudyInfo().getNotification();
             questions = study.getQuestionList().stream()
                     .map(question -> new QuestionDTO2(question))
                     .collect(toList());

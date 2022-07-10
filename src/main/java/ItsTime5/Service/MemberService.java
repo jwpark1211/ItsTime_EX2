@@ -51,6 +51,14 @@ public class MemberService {
         return member.getId();
     }
 
+    //유저의 프로필 이미지를 수정
+    @Transactional
+    public Long modifyProfileImage(Long id, int profile){
+        Member member = memberRepository.findOne(id);
+        member.modifyProfile(profile);
+        return member.getId();
+    }
+
     //id를 통해 유저 찾아오기
     public Member findOne(Long id){
         return memberRepository.findOne(id);
@@ -64,5 +72,12 @@ public class MemberService {
     //유저가 받은 모든 후기 가져오기
     public List<Review> findAllReviewWithMember(Long id) {
         return memberRepository.findAllReviewWithMember(id);
+    }
+
+    //리뷰 set
+    @Transactional
+    public void setReview(Long recipientId, Review review) {
+        Member member = memberRepository.findOne(recipientId);
+        member.setMyReview(review);
     }
 }

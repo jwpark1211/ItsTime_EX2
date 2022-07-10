@@ -2,6 +2,7 @@ package ItsTime5.Domain.Member;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Member {
     private MemberInfo info; //구글에서 받아온 정보(name,email,password)=>embeddable
     private String nickname; //닉네임
     private int battery = 80; //배터리 [default 값 정해야 함]
+    private int profile; //profile 추가
 
     //내가 받은 리뷰 리스트
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
@@ -31,6 +33,11 @@ public class Member {
     public void modifyBattery(int amount){
         //배터리 값 수정
         battery += amount;
+    }
+
+    public void modifyProfile(int profile){
+        //프로필 이미지 수정
+        this.profile = profile;
     }
 
     public void setMyReview(Review review){

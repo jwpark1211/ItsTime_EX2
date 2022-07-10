@@ -1,19 +1,22 @@
 package ItsTime5.Controller;
 
-import ItsTime5.Domain.StudyMember.Answer;
-import ItsTime5.Domain.StudyMember.Comment;
-import ItsTime5.Domain.StudyMember.StudyMember;
+import ItsTime5.Domain.Member.Member;
+import ItsTime5.Domain.Study.Study;
+import ItsTime5.Domain.StudyMember.*;
 import ItsTime5.Service.MemberService;
 import ItsTime5.Service.StudyMemberService;
 import ItsTime5.Service.StudyService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.Host;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +26,7 @@ public class StudyMemberApiController {
     private final StudyService studyService;
     private final MemberService memberService;
 
-    /* [1] 스터디 멤버 신규 생성 */
+    /* [1] 스터디 멤버 신규 생성 */ //
     @PostMapping("/api/studyMember")
     public IdResponse saveMember(@RequestBody @Valid CreateStudyMemberRequest request){
         StudyMember studyMember = new StudyMember(memberService.findOne(request.memberId)
@@ -63,12 +66,11 @@ public class StudyMemberApiController {
         private String answer;
     }
 
-    /* [2] 특정 스터디 멤버 지원 수락 */
+    /* [2] 특정 스터디 멤버 지원 수락 */ //
     @PostMapping("/api/studyMember/{id}")
     public IdResponse joinStudyMember(@PathVariable("id")Long id){
-        StudyMember studyMember = studyMemberService.findOne(id);
-        studyMemberService.joinStudy(studyMember);
-        return new IdResponse(studyMember.getId());
+        Long studyMemberId = studyMemberService.joinStudy(id);
+        return new IdResponse(studyMemberId);
     }
 
     @Data
@@ -77,20 +79,45 @@ public class StudyMemberApiController {
         private T data;
     }
 
-    /* [3] 특정 스터디 멤버 삭제 */
+    /* [3] 특정 스터디 멤버 삭제
     @DeleteMapping("/api/studyMember/{id}")
     public IdResponse deleteStudyMember(@PathVariable("id")Long id){
         Long returnId = studyMemberService.removeStudyMember(id);
         return new IdResponse(returnId);
+    }*/
+
+    /* [4] 특정 유저가 속한 스터디 정보 조회*/ //
+    @GetMapping("/api/studyMember/study/{id}")
+    public Result getStudyInfoWithMemberId(@PathVariable("id")Long id){
+        List<Study> studyList = studyMemberService.findAllStudyWithMemberId(id);
+        List<getStudyInfoWithMemberIdResponse> result = studyList.stream()
+                .map(m -> new getStudyInfoWithMemberIdResponse(
+                        m.getStudyInfo().getRegion(),m.getStudyInfo().getIsOnline(),
+                        m.getStudyInfo().getTitle(),m.getPostTime()))
+                .collect(Collectors.toList());
+        return new Result(result);
     }
 
-    /* [4] 특정 유저가 작성한(HOST) 스터디 정보 조회
-    @GetMapping("/api/studyMember/study/{id}")
-    public Result getHostStudyInfo(@PathVariable("id")Long id){
-        Member member = memberService.findOne(id);
-        List<Study> studyList =
+    /* [4]-1 특정 유저가 작성한 스터디 정보 조회 */ //
+    @GetMapping("/api/studyMember/study/Host/{id}")
+    public Result getStudyInfoByHostWithMemberId(@PathVariable("id")Long id){
+        List<Study> studyList = studyMemberService.findAllStudyByHostWithMemberId(id);
+        List<getStudyInfoWithMemberIdResponse> result = studyList.stream()
+                .map(m -> new getStudyInfoWithMemberIdResponse(
+                        m.getStudyInfo().getRegion(),m.getStudyInfo().getIsOnline(),
+                        m.getStudyInfo().getTitle(),m.getPostTime()))
+                .collect(Collectors.toList());
+        return new Result(result);
+    }
 
-    }*/
+    @Data
+    @AllArgsConstructor
+    static class getStudyInfoWithMemberIdResponse{
+        private String region;
+        private String isOnline;
+        private String title;
+        private LocalDateTime postTime;
+    }
 
     /* [5] 특정 스터디 유저 댓글 생성 */
     @PostMapping("/api/studyMember/{id}/comment")
@@ -111,7 +138,7 @@ public class StudyMemberApiController {
         private int sequence; //순서
     }
 
-    /* [6] 특정 스터디 유저 댓글 수정 */
+    /* [6] 특정 스터디 유저 댓글 수정 */ //
     @PutMapping("/api/studyMember/{id}/comment")
     public IdResponse modifyComment(@PathVariable("id")Long id,
                                     @RequestBody @Valid ModifyCommentRequest request){
@@ -129,5 +156,33 @@ public class StudyMemberApiController {
     public IdResponse deleteComment(@PathVariable("id") Long id){
         studyMemberService.removeComment(id);
         return new IdResponse(id);
+    }
+
+    /* [8] 특정 스터디의 스터디 멤버 정보 전체 조회 */ //
+    @GetMapping("/api/studyMember/{id}/study")
+    public Result getMemberInfoWithStudyId(@PathVariable("id") Long id){
+        Member member = studyMemberService.findHostMemberWithStudyId(id);
+        getMemberInfoWithStudyIdResponse HostResponse =
+                new getMemberInfoWithStudyIdResponse(member.getNickname(),MemberGrade.host,
+                        member.getBattery(),member.getProfile());
+        List<Member> memberList = studyMemberService.findMemberWithStudyId(id);
+        for (Member member1 : memberList) {
+            System.out.println(member.getNickname());
+        }
+        List<getMemberInfoWithStudyIdResponse> result = memberList.stream()
+                .map(m->new getMemberInfoWithStudyIdResponse(m.getNickname(),MemberGrade.guest,
+                        m.getBattery(),m.getProfile()))
+                .collect(Collectors.toList());
+        result.add(HostResponse);
+        return new Result(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class getMemberInfoWithStudyIdResponse{
+        private String nickname;
+        private MemberGrade grade;
+        private int battery;
+        private int profile;
     }
 }
