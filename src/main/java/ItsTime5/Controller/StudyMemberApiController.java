@@ -93,7 +93,7 @@ public class StudyMemberApiController {
         List<getStudyInfoWithMemberIdResponse> result = studyList.stream()
                 .map(m -> new getStudyInfoWithMemberIdResponse(
                         m.getStudyInfo().getRegion(),m.getStudyInfo().getIsOnline(),
-                        m.getStudyInfo().getTitle(),m.getPostTime()))
+                        m.getStudyInfo().getTitle(),m.getPostTime(),m.getId()))
                 .collect(Collectors.toList());
         return new Result(result);
     }
@@ -105,7 +105,7 @@ public class StudyMemberApiController {
         List<getStudyInfoWithMemberIdResponse> result = studyList.stream()
                 .map(m -> new getStudyInfoWithMemberIdResponse(
                         m.getStudyInfo().getRegion(),m.getStudyInfo().getIsOnline(),
-                        m.getStudyInfo().getTitle(),m.getPostTime()))
+                        m.getStudyInfo().getTitle(),m.getPostTime(),m.getId()))
                 .collect(Collectors.toList());
         return new Result(result);
     }
@@ -117,6 +117,7 @@ public class StudyMemberApiController {
         private String isOnline;
         private String title;
         private LocalDateTime postTime;
+        private Long studyId;
     }
 
     /* [5] 특정 스터디 유저 댓글 생성 */
@@ -164,14 +165,14 @@ public class StudyMemberApiController {
         Member member = studyMemberService.findHostMemberWithStudyId(id);
         getMemberInfoWithStudyIdResponse HostResponse =
                 new getMemberInfoWithStudyIdResponse(member.getNickname(),MemberGrade.host,
-                        member.getBattery(),member.getProfile());
+                        member.getBattery(),member.getProfile(), member.getId());
         List<Member> memberList = studyMemberService.findMemberWithStudyId(id);
         for (Member member1 : memberList) {
             System.out.println(member.getNickname());
         }
         List<getMemberInfoWithStudyIdResponse> result = memberList.stream()
                 .map(m->new getMemberInfoWithStudyIdResponse(m.getNickname(),MemberGrade.guest,
-                        m.getBattery(),m.getProfile()))
+                        m.getBattery(),m.getProfile(),m.getId()))
                 .collect(Collectors.toList());
         result.add(HostResponse);
         return new Result(result);
@@ -184,5 +185,6 @@ public class StudyMemberApiController {
         private MemberGrade grade;
         private int battery;
         private int profile;
+        private Long memberId;
     }
 }
